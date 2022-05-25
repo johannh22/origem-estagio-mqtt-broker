@@ -18,20 +18,22 @@ import json
 import string
 import random
 import paho.mqtt.client as paho
+from paho import mqtt
 from env_codes import *
 
 
-# paho.Client(client_id=””, clean_session=True, userdata=None, protocol=paho.MQTTv31)
 class MotoClient(paho.Client):
-    def __init__(self, client_id=CLIENT_ID, clean_session=False,
+    def __init__(self, client_id=CLIENT_ID,
                  userdata=None, protocol=paho.MQTTv5):
-        super().__init__(client_id, clean_session,
+        super().__init__(client_id,
                          userdata, protocol)
+        # enable TLS for secure connection
+        self.tls_set(tls_version=mqtt.client.ssl.PROTOCOL_TLS)
         self.username_pw_set(USER, PASSWORD)
         self.connect(HOST_NAME, 8883)
 
     def on_connect(self, client, userdata, flags, rc, properties=None):
-        print("CONNACK received with code %s." % rc)
+        print(f"CONNACK received with code {str(rc)}.")
 
     def on_publish(self, client, userdata, message_id, properties=None):
         print("message id: " + str(message_id))
@@ -57,7 +59,10 @@ class Moto(MotoClient):
         self.bat = None
 
     def communicate(self):
-        self.publish(self.topic, payload=json.dumps(self.data), qos=1)
+        self.loop_start()
+        self.publish(self.topic, payload=json.dumps(
+            self.data), qos=1, retain=True)
+        self.loop_stop()
 
     def ask_for_bat(self, supplier):
         self.bat = supplier.supply_bat()
@@ -74,7 +79,7 @@ class Moto(MotoClient):
 class Bateria:
     def __init__(self):
         self.id = random.randint(1000, 9999)
-        self.soc = ""
+        self.soc = "fully charged"
 
 
 class Fabrica:
