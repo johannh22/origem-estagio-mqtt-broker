@@ -6,9 +6,9 @@ This project was developed using Python 3.9 and in MacOS Monterrey (12.3.1). The
 
 ## Usage Instructions
 
-To connect to the broker, please fill your info in the `[env_codes.py](./env_codes.py)` file. The script at `[mqtt_client.py](./mqtt_client.py)` handles the rest.
+To connect to the broker, please fill your info in the [env_codes.py](./env_codes.py) file. The script at [mqtt_client.py](./mqtt_client.py) handles the rest.
 
-Requirements for the code are located in `[requirements.txt](./requirements.txt)`. To install them, use the following:
+Requirements for the code are located in [requirements.txt](./requirements.txt). To install them, use the following:
 
 ```bash
 pip install -r requirements.txt
